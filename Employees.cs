@@ -15,9 +15,9 @@ namespace EmployeesHierarchy
         public Employees(string filePath)
         {
             employeeList = ProcessCsvFile(filePath);
-            //ValidSalary(employeeList);
-            //OneCeo(employeeList);
-            //ReportTo(employeeList);
+            ValidSalary(employeeList);
+            OneCeo(employeeList);
+            ReportTo(employeeList);
             CircuralRefference(employeeList);
         }
 
@@ -253,20 +253,20 @@ namespace EmployeesHierarchy
                 {
                     Console.WriteLine(employee.Key + "  " + employee.Value[employee.Key].EmployeeId + "  " + employee.Value[employee.Key].ManagerId + "  " + employee.Value[employee.Key].Salary);
 
-                    //if (employee.Value[employee.Key].ManagerId.Contains(ceo[0].ToString()) && staffs.Contains(employee.Value[employee.Key].EmployeeId))
-                    //{
-                    //    Console.WriteLine(employee.Value[employee.Key].EmployeeId + "  " + employee.Value[employee.Key].ManagerId);
-                    //    //Console.WriteLine("circural refference found");
-                    //    swicth = true;
-                    //}
+                    if (employee.Value[employee.Key].ManagerId.Contains(ceo[0].ToString()) && staffs.Contains(employee.Value[employee.Key].EmployeeId))
+                    {
+                        //Console.WriteLine(employee.Value[employee.Key].EmployeeId + "  " + employee.Value[employee.Key].ManagerId);
+                        //Console.WriteLine("circural refference found");
+                        swicth = true;
+                    }
 
-                    //if (employee.Value[employee.Key].ManagerId.Contains(managers[0].ToString()) && staffs.Contains(employee.Value[employee.Key].EmployeeId))
-                    //{
+                    if (employee.Value[employee.Key].ManagerId.Contains(managers[0].ToString()) && staffs.Contains(employee.Value[employee.Key].EmployeeId))
+                    {
 
-                    //    Console.WriteLine(employee.Value[employee.Key].EmployeeId + "  " + employee.Value[employee.Key].ManagerId);
-                    //    //Console.WriteLine("circural refference found");
-                    //    swicth = true;
-                    //}
+                        //Console.WriteLine(employee.Value[employee.Key].EmployeeId + "  " + employee.Value[employee.Key].ManagerId);
+                        //Console.WriteLine("circural refference found");
+                        swicth = true;
+                    }
                 }
                
                 Console.WriteLine("**************************************************");
