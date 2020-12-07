@@ -11,15 +11,14 @@ namespace EmployeesHierarchy
     public class Employees
     {
         public ArrayList employeeList;
-        public Dictionary<string, ArrayList> EmployeeDict;
 
         public Employees(string filePath)
         {
             employeeList = ProcessCsvFile(filePath);
-            ValidSalary(employeeList);
-            OneCeo(employeeList);
-            ReportTo(employeeList);
-            CircuralRefference();
+            //ValidSalary(employeeList);
+            //OneCeo(employeeList);
+            //ReportTo(employeeList);
+            CircuralRefference(employeeList);
         }
 
         //CVS processing method that returns a well formated Array from the give CCS file
@@ -30,7 +29,7 @@ namespace EmployeesHierarchy
             {
                 //check if the CSV FILE path exists in the give directory
                 if (File.Exists(filePath))
-                {                   
+                {
                     string[] csv = File.ReadAllLines(filePath);
 
                     //check if the CSV FILE is empty
@@ -52,9 +51,10 @@ namespace EmployeesHierarchy
                                 Console.WriteLine("CSV file value must have 3 columns in each line. At row " + c.ToString());
                             }
                             employeesList.Add(List);
-                            Console.WriteLine(fields[0] + " " + fields[1] + " " + fields[2] +"\n");
+                            Console.WriteLine(fields[0] + " " + fields[1] + " " + fields[2] + "\n");
+                            Console.WriteLine("...................................................");
                         }
-                        return employeesList; 
+                        return employeesList;
                     }
                     else
                     {
@@ -96,7 +96,7 @@ namespace EmployeesHierarchy
             {
                 Console.WriteLine("An error occured : " + ex.Message);
             }
-           
+
             return swicth;
         }
 
@@ -124,7 +124,7 @@ namespace EmployeesHierarchy
             {
                 Console.WriteLine("An error occured : " + ex.Message);
             }
-               
+
             return swicth;
         }
 
@@ -135,7 +135,7 @@ namespace EmployeesHierarchy
 
             try
             {
-                EmployeeDict = new Dictionary<string, ArrayList>();
+                Dictionary<string, ArrayList> EmployeeDict = new Dictionary<string, ArrayList>();
 
                 foreach (ArrayList field in list)
                 {
@@ -147,38 +147,135 @@ namespace EmployeesHierarchy
                     }
                     else
                     {
-                        //using Dictionary Add method verifies employee id is not repeated using employee Id as Key
+                        //using Dictionary ContainsKey method verifies employee id is not repeated using employee Id as Key
                         //to avoid one employee reporting to more than one manager
-                        EmployeeDict.Add( field[0].ToString(), field);
+                        if (!EmployeeDict.ContainsKey(field[0].ToString()))
+                        {
+                            EmployeeDict.Add(field[0].ToString(), field);
+                        }
+                        else if (EmployeeDict.ContainsKey(field[0].ToString()))
+                        {
+                            Console.WriteLine("EmployeeId can't be duplicated as it may led, an employee reporting to more than one manager.");
+                            swicth = true;
+                        }
                     }
                 }
             }
-            catch (Exception  ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("An error occured : " + ex.Message);
-                swicth =true;
             }
-            
+
             return swicth;
         }
 
+        //object employee
+        public class Employee
+        {
+            public string EmployeeId { get; set; }
+            public string ManagerId { get; set; }
+            public long Salary { get; set; }
+        }
+
         //counter check employees circural refference
-        public bool CircuralRefference()
+        public bool CircuralRefference(ArrayList list)
         {
             bool swicth = false;
 
             try
             {
-                foreach (KeyValuePair<string, ArrayList> keyValue in EmployeeDict)
+                ArrayList ceo = new ArrayList();
+                ArrayList managers = new ArrayList();
+                ArrayList staffs = new ArrayList();
+                ArrayList employees = new ArrayList();
+
+                Dictionary<int,List<Employee>> employeeDict = new Dictionary<int,List<Employee>>();
+
+                List<Employee> emp = new List<Employee>();
+
+                Console.WriteLine("####################################   CEO    ");
+
+                foreach (ArrayList field in list)
                 {
-                    Console.WriteLine(keyValue.Key);
+                    //Console.WriteLine(field[0]);
+                    employees.Add(field[0].ToString().Trim());
+
+                    //verify employee id is not null
+                    if (string.IsNullOrEmpty(field[0].ToString()))
+                    {
+                        Console.WriteLine("This row is missing Empolyee Id");
+                        swicth = true;
+                    }
+                    else
+                    {
+                        //ceo check
+                        if (string.IsNullOrEmpty(field[1].ToString().Trim()))
+                        {
+                            Console.WriteLine(field[0]);
+                            ceo.Add(field[0]);
+                            Console.WriteLine("************************************ MANAGERS ");
+                        }
+                        //managers check
+                        else if (!ceo.Contains(field[1].ToString().Trim()))
+                        {
+                            Console.WriteLine(field[1]);
+                            managers.Add(field[1]);
+                        }
+                    }
+
+                    //add every employee to list of employees
+                    emp.Add(new Employee 
+                     { 
+                        EmployeeId= field[0].ToString(), 
+                        ManagerId = field[1].ToString(), 
+                        Salary = int.Parse(field[2].ToString())
+                     });
                 }
+
+                Console.WriteLine("********************************* NON-MANAGERS ");
+
+                for (int c = 0; c < list.Count; c++)
+                {
+                    //non-managers check
+                    if (!ceo.Contains(employees[c]) && !managers.Contains(employees[c]))
+                    {
+                        Console.WriteLine(employees[c]);
+                        staffs.Add(employees[c]);
+                    }
+
+                    //add a list of employees to employee dictionary
+                    employeeDict.Add(c, emp);
+                }
+
+                Console.WriteLine("************************** EMPLOYEES DICTIONARY ");
+
+                foreach (KeyValuePair<int, List<Employee>> employee in employeeDict)
+                {
+                    Console.WriteLine(employee.Key + "  " + employee.Value[employee.Key].EmployeeId + "  " + employee.Value[employee.Key].ManagerId + "  " + employee.Value[employee.Key].Salary);
+
+                    //if (employee.Value[employee.Key].ManagerId.Contains(ceo[0].ToString()) && staffs.Contains(employee.Value[employee.Key].EmployeeId))
+                    //{
+                    //    Console.WriteLine(employee.Value[employee.Key].EmployeeId + "  " + employee.Value[employee.Key].ManagerId);
+                    //    //Console.WriteLine("circural refference found");
+                    //    swicth = true;
+                    //}
+
+                    //if (employee.Value[employee.Key].ManagerId.Contains(managers[0].ToString()) && staffs.Contains(employee.Value[employee.Key].EmployeeId))
+                    //{
+
+                    //    Console.WriteLine(employee.Value[employee.Key].EmployeeId + "  " + employee.Value[employee.Key].ManagerId);
+                    //    //Console.WriteLine("circural refference found");
+                    //    swicth = true;
+                    //}
+                }
+               
+                Console.WriteLine("**************************************************");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("An error occured : " + ex.Message);
             }
-            
+
             return swicth;
         }
         
@@ -197,8 +294,6 @@ namespace EmployeesHierarchy
                     }
                 }
                 Console.WriteLine("Budget SubTotal : " + totalSalary);
-
-                
             }
             catch(Exception ex)
             {
