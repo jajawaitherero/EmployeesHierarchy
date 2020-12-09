@@ -2,16 +2,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeesHierarchy
 {
     public class Employees
     {
+        #region Fields
         public ArrayList employeeList;
 
+        //object employee
+        private class Employee
+        {
+            public string EmployeeId { get; set; }
+            public string ManagerId { get; set; }
+            public long Salary { get; set; }
+        }
+        #endregion
+
+        #region Ctor
         public Employees(string filePath)
         {
             employeeList = ProcessCsvFile(filePath);
@@ -20,8 +28,10 @@ namespace EmployeesHierarchy
             ReportTo(employeeList);
             CircuralRefference(employeeList);
         }
+        #endregion
 
-        //CVS processing method that returns a well formated Array from the give CCS file
+        #region Methods
+        //CVS processing method that returns a well formated ArrayList from the given CVS file
         public ArrayList ProcessCsvFile(string filePath)
         {
             ArrayList employeesList = new ArrayList();
@@ -169,13 +179,6 @@ namespace EmployeesHierarchy
             return swicth;
         }
 
-        //object employee
-        public class Employee
-        {
-            public string EmployeeId { get; set; }
-            public string ManagerId { get; set; }
-            public long Salary { get; set; }
-        }
 
         //counter check employees circural refference
         public bool CircuralRefference(ArrayList list)
@@ -189,7 +192,7 @@ namespace EmployeesHierarchy
                 ArrayList staffs = new ArrayList();
                 ArrayList employees = new ArrayList();
 
-                Dictionary<int,List<Employee>> employeeDict = new Dictionary<int,List<Employee>>();
+                Dictionary<int, List<Employee>> employeeDict = new Dictionary<int, List<Employee>>();
 
                 List<Employee> emp = new List<Employee>();
 
@@ -224,12 +227,12 @@ namespace EmployeesHierarchy
                     }
 
                     //add every employee to list of employees
-                    emp.Add(new Employee 
-                     { 
-                        EmployeeId= field[0].ToString(), 
-                        ManagerId = field[1].ToString(), 
+                    emp.Add(new Employee
+                    {
+                        EmployeeId = field[0].ToString(),
+                        ManagerId = field[1].ToString(),
                         Salary = int.Parse(field[2].ToString())
-                     });
+                    });
                 }
 
                 Console.WriteLine("********************************* NON-MANAGERS ");
@@ -268,7 +271,7 @@ namespace EmployeesHierarchy
                         swicth = true;
                     }
                 }
-               
+
                 Console.WriteLine("**************************************************");
             }
             catch (Exception ex)
@@ -278,7 +281,7 @@ namespace EmployeesHierarchy
 
             return swicth;
         }
-        
+
         //instance method that returns the salary budget from the specified manager
         public long SalaryBudget(string managerName)
         {
@@ -295,12 +298,13 @@ namespace EmployeesHierarchy
                 }
                 Console.WriteLine("Budget SubTotal : " + totalSalary);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("An error occured : " + ex.Message);
             }
-            
+
             return totalSalary;
         }
+        #endregion
     }
 }
