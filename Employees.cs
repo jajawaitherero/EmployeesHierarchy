@@ -261,8 +261,6 @@ namespace EmployeesHierarchy
                         Console.WriteLine("circural refference found");
                         swicth = true;
                     }
-
-                   
                 }
 
                 Console.WriteLine("**************************************************");
