@@ -179,7 +179,6 @@ namespace EmployeesHierarchy
             return swicth;
         }
 
-
         //counter check employees circural refference
         public bool CircuralRefference(ArrayList list)
         {
@@ -256,20 +255,22 @@ namespace EmployeesHierarchy
                 {
                     Console.WriteLine(employee.Key + "  " + employee.Value[employee.Key].EmployeeId + "  " + employee.Value[employee.Key].ManagerId + "  " + employee.Value[employee.Key].Salary);
 
-                    if (employee.Value[employee.Key].ManagerId.Contains(ceo[0].ToString()) && staffs.Contains(employee.Value[employee.Key].EmployeeId))
-                    {
-                        //Console.WriteLine(employee.Value[employee.Key].EmployeeId + "  " + employee.Value[employee.Key].ManagerId);
-                        //Console.WriteLine("circural refference found");
-                        swicth = true;
-                    }
+                    //if (employee.Value[employee.Key].EmployeeId.Contains(ceo[0].ToString()))
+                    //{
+                    //    Console.WriteLine(employee.Value[employee.Key].ManagerId.ToString());
+                    //}
 
-                    if (employee.Value[employee.Key].ManagerId.Contains(managers[0].ToString()) && staffs.Contains(employee.Value[employee.Key].EmployeeId))
-                    {
+                    //if (employee.Value[employee.Key].ManagerId.Contains(ceo[0].ToString()))
+                    //{
+                    //   Console.WriteLine(employee.Value[employee.Key].EmployeeId.ToString());
+                    //}
 
-                        //Console.WriteLine(employee.Value[employee.Key].EmployeeId + "  " + employee.Value[employee.Key].ManagerId);
-                        //Console.WriteLine("circural refference found");
-                        swicth = true;
-                    }
+                    //if (employee.Value[employee.Key].ManagerId.Contains(managers[0].ToString()) && staffs.Contains(employee.Value[employee.Key].EmployeeId))
+                    //{
+                    //    //Console.WriteLine(employee.Value[employee.Key].EmployeeId + "  " + employee.Value[employee.Key].ManagerId);
+                    //    //Console.WriteLine("circural refference found");
+                    //    swicth = true;
+                    //}
                 }
 
                 Console.WriteLine("**************************************************");
